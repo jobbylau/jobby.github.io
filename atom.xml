@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>你好</title>
+  <subtitle>stay hungry,stay foolish</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://jobbylau.github.io/"/>
+  <updated>2017-03-01T08:30:17.525Z</updated>
+  <id>https://jobbylau.github.io/</id>
+  
+  <author>
+    <name>jobby</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>上班随笔</title>
+    <link href="https://jobbylau.github.io/2017/03/01/%E4%B8%8A%E7%8F%AD%E9%9A%8F%E7%AC%94/"/>
+    <id>https://jobbylau.github.io/2017/03/01/上班随笔/</id>
+    <published>2017-03-01T06:04:47.000Z</published>
+    <updated>2017-03-01T08:30:17.525Z</updated>
+    
+    <content type="html"><![CDATA[<a id="more"></a>
+<p><br>其实之前一直都想找个什么方式记录一些生活中的所见所想。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;p&gt;&lt;br&gt;其实之前一直都想找个什么方式记录一些生活中的所见所想。&lt;/p&gt;
+
+    
+    </summary>
+    
+    
+      <category term="随想" scheme="https://jobbylau.github.io/tags/%E9%9A%8F%E6%83%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>test</title>
+    <link href="https://jobbylau.github.io/2017/02/22/hello-world/"/>
+    <id>https://jobbylau.github.io/2017/02/22/hello-world/</id>
+    <published>2017-02-22T09:10:26.398Z</published>
+    <updated>2017-03-01T08:30:46.542Z</updated>
+    
+    <content type="html"><![CDATA[<p>qgg傻逼</p>
+<a id="more"></a>
+<h3 id="第一次写文章"><a href="#第一次写文章" class="headerlink" title="第一次写文章"></a>第一次写文章</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;qgg傻逼&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="生活" scheme="https://jobbylau.github.io/tags/%E7%94%9F%E6%B4%BB/"/>
+    
+  </entry>
+  
+</feed>
