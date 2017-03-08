@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>I&#39;m fucked up</title>
+  <title>简单快乐，使命必达</title>
   <subtitle>stay hungry,stay foolish</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://jobbylau.github.io/"/>
-  <updated>2017-03-06T16:14:40.108Z</updated>
+  <updated>2017-03-08T14:25:42.911Z</updated>
   <id>https://jobbylau.github.io/</id>
   
   <author>
@@ -16,17 +16,317 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>资本主义的奢华与腐败</title>
-    <link href="https://jobbylau.github.io/2017/03/06/%E4%B8%80%E5%88%87%E8%B5%B0%E8%B5%84%E6%B4%BE%E9%83%BD%E6%98%AF%E7%BA%B8%E8%80%81%E8%99%8E/"/>
-    <id>https://jobbylau.github.io/2017/03/06/一切走资派都是纸老虎/</id>
+    <title>Yii 2.0 框架初学之实现注册功能(转)</title>
+    <link href="https://jobbylau.github.io/2017/03/08/laravel-stuff/"/>
+    <id>https://jobbylau.github.io/2017/03/08/laravel-stuff/</id>
+    <published>2017-03-08T13:57:10.000Z</published>
+    <updated>2017-03-08T14:25:42.911Z</updated>
+    
+    <content type="html"><![CDATA[<p>初学YII框架，与大家分享一下。</p>
+<p>首先得配置好数据库，比较简单，这里就不细说了。这里主要说YII框架代码实现。</p>
+<p><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="100%" src="//music.163.com/outchain/player?type=2&id=208938&auto=0&height=66"></iframe><br><a id="more"></a><br>在controller/siteController.php控制器里设置注册方法<br>    /**</p>
+<pre><code>* @return string|\yii\web\Response
+
+* 设置注册方法
+
+*/
+
+
+public function actionSignup()
+
+{
+
+{
+
+$model = new SignupForm();
+
+if ($model-&gt;load(Yii::$app-&gt;request-&gt;post())) //载入post所获取的数据
+
+{
+
+if ($user=$model-&gt;signup())
+
+{
+
+if(Yii::$app-&gt;getUser()-&gt;login($user))
+
+{
+
+return $this-&gt;goHome();
+
+}
+
+}
+
+}
+
+return $this-&gt;render(&apos;signup&apos;, [
+
+&apos;model&apos; =&gt; $model,
+
+]); //显示注册页面
+
+}
+
+}
+
+在models/signupForm.php 的模型类文件
+
+namespace home\models;
+
+use yii\base\Model;
+
+class SignupForm extends Model
+
+{
+
+public $username;
+
+public $password;
+
+public $email;
+
+public function rules()
+
+{
+
+return [
+
+[[&apos;username&apos;,&apos;password&apos;,&apos;email&apos;],&apos;required&apos;],
+
+[&apos;email&apos;,&apos;email&apos;],
+
+[&apos;username&apos;,&apos;filter&apos;,&apos;filter&apos;=&gt;&apos;trim&apos;],//过滤输入的空格
+
+[&apos;username&apos;,&apos;string&apos;,&apos;min&apos;=&gt;2,&apos;max&apos;=&gt;8],//限制输入字符的长度
+
+[&apos;username&apos;,&apos;unique&apos;,&apos;targetClass&apos;=&gt;&apos;home\models\User&apos;,&apos;message&apos;=&gt;&apos;用户名已存在&apos;],//判断用户名是否已被注册
+
+[&apos;email&apos;,&apos;unique&apos;,&apos;targetClass&apos;=&gt;&apos;home\models\User&apos;,&apos;message&apos;=&gt;&apos;邮箱已被注册&apos;],//判断邮箱是否已被注册
+
+];
+
+}
+
+public function attributeLabels() //设置字段标签名
+
+{
+
+return [
+
+&apos;username&apos;=&gt;&apos;用户名&apos;,
+
+&apos;password&apos;=&gt;&apos;密码&apos;,
+
+&apos;email&apos;=&gt;&apos;邮箱&apos;,
+
+];
+
+}
+
+public function signup()
+
+{
+
+if(!$this-&gt;validate()) //validate方法即执行rules方法里的设置
+
+{
+
+return null;
+
+}
+
+$user=new User();
+
+$user-&gt;username=$this-&gt;username;
+
+$user-&gt;setPassword($this-&gt;password);//存储并加密密码的方法，在User模型类里
+
+$user-&gt;email=$this-&gt;email;
+
+$user-&gt;setAuthKey();
+
+//插入数据库
+
+return $user-&gt;save() ? $user : null;
+
+}
+
+}
+</code></pre><p>在view文件夹下新建注册页面的视图文件<br>注册页面的视图文件可用Gii来生成</p>
+<pre><code>use yii\helpers\Html;
+
+use yii\widgets\ActiveForm;
+
+?&gt;
+
+field($model, &apos;username&apos;)-&gt;textInput([&apos;autofocus&apos;=&gt;true,&apos;placeholder&apos;=&gt;&apos;请输入用户名&apos;]); ?&gt;
+
+field($model, &apos;password&apos;)-&gt;passwordInput([&apos;placeholder&apos;=&gt;&apos;请输入密码&apos;]);; ?&gt;
+
+field($model, &apos;email&apos;) ?&gt;
+
+&apos;btn btn-primary&apos;]) ?&gt;
+User模型类里书写以下代码
+
+namespace home\models;
+
+use yii\db\ActiveRecord;
+
+use yii\web\IdentityInterface;
+/**
+
+* @param $password
+
+* 存储并加密密码
+
+*/
+
+public  function setPassword($password)
+
+{
+
+$this-&gt;password_hash=\Yii::$app-&gt;security-&gt;generatePasswordHash($password);
+
+}
+/**
+
+*产生authkey
+
+*/
+
+public function setAuthKey()
+
+{
+
+$this-&gt;auth_key=\Yii::$app-&gt;security-&gt;generateRandomString();
+
+}
+</code></pre><p>包含的知识点</p>
+<p>模型载入用户所提交的数据</p>
+<pre><code>$model-&gt;load(\Yii:$app-&gt;request-&gt;post())
+</code></pre><p>延伸学习</p>
+<pre><code>//处理请求
+
+$request=Yii::$app-&gt;request;
+
+$get=$request-&gt;get();//获取get的值，等价于$get=$_GET;
+
+$id=$request-&gt;get(&apos;id&apos;);// 等价于$id = isset($_GET[&apos;id&apos;]) ? $_GET[&apos;id&apos;] : null;
+
+$id=$request-&gt;get(&apos;id&apos;,&apos;1&apos;);//等价于$id=isset($_GET[&apos;id&apos;]) ? $_GET[&apos;id&apos;] : 1;
+
+$post=Yii::$app-&gt;request-&gt;post();
+
+$post=Yii::$app-&gt;request-&gt;post(&apos;name&apos;,&apos;&apos;);// $id=isset($_POST[&apos;name&apos;]) ? $_POST[&apos;name&apos;] : &apos;&apos;;
+
+//判断请求方法
+
+if(Yii::$app-&gt;request-&gt;isPost){};
+
+if(Yii::$app-&gt;request-&gt;isAjax){};
+
+if(Yii::$app-&gt;request-&gt;isGet){};
+
+if(Yii::$app-&gt;request-&gt;isPut){};
+
+//更多参考见官方文档
+登录用户
+
+Yii::$app-&gt;getUser()-&gt;login($user)
+
+表单输入验证的规则设置
+
+public function rules()
+
+{
+
+return [
+
+[[&apos;username&apos;,&apos;password&apos;,&apos;email&apos;],&apos;required&apos;],
+
+[&apos;email&apos;,&apos;email&apos;],
+
+[&apos;username&apos;,&apos;filter&apos;,&apos;filter&apos;=&gt;&apos;trim&apos;],//过滤输入的空格
+
+[&apos;username&apos;,&apos;string&apos;,&apos;min&apos;=&gt;2,&apos;max&apos;=&gt;8],//限制输入字符的长度
+
+[&apos;username&apos;,&apos;unique&apos;,&apos;targetClass&apos;=&gt;&apos;home\models\User&apos;,&apos;message&apos;=&gt;&apos;用户名已存在&apos;],//判断用户名是否已被注册
+
+[&apos;email&apos;,&apos;unique&apos;,&apos;targetClass&apos;=&gt;&apos;home\models\User&apos;,&apos;message&apos;=&gt;&apos;邮箱已被注册&apos;],//判断邮箱是否已被注册
+
+];
+
+}
+
+//搭配以下代码使用
+
+if ($model-&gt;validate())
+
+{ // all inputs are valid
+
+}
+
+else
+
+{ // validation failed: $errors is an array containing error messages $errors = $model-&gt;errors;
+
+}
+</code></pre><p>//更多详情参考官方手册</p>
+<p>//<a href="http://www.yiichina.com/doc/guide/2.0/input-validation" target="_blank" rel="external">http://www.yiichina.com/doc/guide/2.0/input-validation</a><br>创建表单视图</p>
+<pre><code>use yii\helpers\Html;
+
+use yii\widgets\ActiveForm;
+
+?&gt;
+
+
+
+field($model, &apos;username&apos;)-&gt;textInput([&apos;autofocus&apos;=&gt;true,&apos;placeholder&apos;=&gt;&apos;请输入用户名&apos;]); ?&gt;
+
+field($model, &apos;password&apos;)-&gt;passwordInput([&apos;placeholder&apos;=&gt;&apos;请输入密码&apos;]);; ?&gt;
+
+field($model, &apos;email&apos;) ?&gt;
+
+&apos;btn btn-primary&apos;]) ?&gt;
+</code></pre><p>//更多详情参考官方手册</p>
+<p>//<a href="http://www.yiichina.com/doc/api/2.0/yii-widgets-activeform" target="_blank" rel="external">http://www.yiichina.com/doc/api/2.0/yii-widgets-activeform</a><br>将数据保存到数据库</p>
+<pre><code>$user-&gt;username=$this-&gt;username;
+
+$user-&gt;email=$this-&gt;email;
+
+$user-&gt;save();
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;初学YII框架，与大家分享一下。&lt;/p&gt;
+&lt;p&gt;首先得配置好数据库，比较简单，这里就不细说了。这里主要说YII框架代码实现。&lt;/p&gt;
+&lt;p&gt;&lt;iframe frameborder=&quot;no&quot; border=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; width=100% height=100% src=&quot;//music.163.com/outchain/player?type=2&amp;id=208938&amp;auto=0&amp;height=66&quot;&gt;&lt;/iframe&gt;&lt;br&gt;
+    
+    </summary>
+    
+      <category term="PHP" scheme="https://jobbylau.github.io/categories/PHP/"/>
+    
+    
+      <category term="YII" scheme="https://jobbylau.github.io/tags/YII/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>One day in Macau</title>
+    <link href="https://jobbylau.github.io/2017/03/06/One%20day%20in%20Macau/"/>
+    <id>https://jobbylau.github.io/2017/03/06/One day in Macau/</id>
     <published>2017-03-06T15:42:32.000Z</published>
-    <updated>2017-03-06T16:14:40.108Z</updated>
+    <updated>2017-03-08T13:56:17.809Z</updated>
     
     <content type="html"><![CDATA[<p>昨天有幸体验了一把资本主义社会的奢华和腐败。所幸在资本主义的奢华与腐败面前，仍然能高举社会主义的旗帜，背负着赢够“资本主义”的钱，光荣回到社会主义体制下消费。然而不尽人意，还是在强大的资本主义的势力下，向资本低头。<br><a id="more"></a><br><img src="/img/P70305-122851.jpg" alt="P70305-122851"></p>
 <center>民政总署</center>
 
 <p><img src="/img/P70305-125031.jpg" alt="P70305-125031"></p>
 <center>大三巴</center><br><img src="/img/P70305-140759.jpg" alt="P70305-140759"><br><center>威尼斯酒店</center><br><img src="/img/P70305-140644.jpg" alt="P70305-140644"><br><center>威尼斯大门走廊</center><br><img src="/img/P70305-143118.jpg" alt="P70305-143118"><br><center>威尼斯运河</center><br><img src="/img/P70305-151736.jpg" alt="P70305-151736"><br><center>金沙酒店外面的铁塔</center>
+
+<embed src="//www.tingge123.com/mp3/2017-03-03/1488548024.mp3" width="298" height="52" allownetworking="all">
 ]]></content>
     
     <summary type="html">
@@ -47,7 +347,7 @@
     <link href="https://jobbylau.github.io/2017/03/04/Have-a-nice-weekend/"/>
     <id>https://jobbylau.github.io/2017/03/04/Have-a-nice-weekend/</id>
     <published>2017-03-04T14:38:44.000Z</published>
-    <updated>2017-03-04T15:12:30.968Z</updated>
+    <updated>2017-03-08T13:56:22.372Z</updated>
     
     <content type="html"><![CDATA[<p>又来到了熟悉的城市-珠海。还是老样子去拱北口岸和文华书店逛了一圈。今天太累了，就先写到这了。</p>
 <a id="more"></a>

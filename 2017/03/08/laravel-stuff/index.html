@@ -6,17 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://jobbylau.github.io">
-  <title>简单快乐，使命必达</title>
+  <title>Yii 2.0 框架初学之实现注册功能(转) | 简单快乐，使命必达</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="rule the world">
-<meta property="og:type" content="website">
-<meta property="og:title" content="简单快乐，使命必达">
-<meta property="og:url" content="https://jobbylau.github.io/index.html">
+  <meta name="description" content="初学YII框架，与大家分享一下。
+首先得配置好数据库，比较简单，这里就不细说了。这里主要说YII框架代码实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Yii 2.0 框架初学之实现注册功能(转)">
+<meta property="og:url" content="https://jobbylau.github.io/2017/03/08/laravel-stuff/index.html">
 <meta property="og:site_name" content="简单快乐，使命必达">
-<meta property="og:description" content="rule the world">
+<meta property="og:description" content="初学YII框架，与大家分享一下。
+首先得配置好数据库，比较简单，这里就不细说了。这里主要说YII框架代码实现。">
+<meta property="og:updated_time" content="2017-03-08T14:25:42.911Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="简单快乐，使命必达">
-<meta name="twitter:description" content="rule the world">
+<meta name="twitter:title" content="Yii 2.0 框架初学之实现注册功能(转)">
+<meta name="twitter:description" content="初学YII框架，与大家分享一下。
+首先得配置好数据库，比较简单，这里就不细说了。这里主要说YII框架代码实现。">
   
     <link rel="alternative" href="/atom.xml" title="简单快乐，使命必达" type="application/atom+xml">
   
@@ -154,16 +158,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-laravel-stuff" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-laravel-stuff" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/08/laravel-stuff/">Yii 2.0 框架初学之实现注册功能(转)</a>
+    <h1 class="article-title" itemprop="name">
+      Yii 2.0 框架初学之实现注册功能(转)
     </h1>
   
 
@@ -178,10 +180,312 @@
       
         <p>初学YII框架，与大家分享一下。</p>
 <p>首先得配置好数据库，比较简单，这里就不细说了。这里主要说YII框架代码实现。</p>
-<p><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=100% height=100% src="//music.163.com/outchain/player?type=2&id=208938&auto=0&height=66"></iframe><br>
-        
+<p><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="100%" src="//music.163.com/outchain/player?type=2&id=208938&auto=0&height=66"></iframe><br><a id="more"></a><br>在controller/siteController.php控制器里设置注册方法<br>    /**</p>
+<pre><code>* @return string|\yii\web\Response
+
+* 设置注册方法
+
+*/
+
+
+public function actionSignup()
+
+{
+
+{
+
+$model = new SignupForm();
+
+if ($model-&gt;load(Yii::$app-&gt;request-&gt;post())) //载入post所获取的数据
+
+{
+
+if ($user=$model-&gt;signup())
+
+{
+
+if(Yii::$app-&gt;getUser()-&gt;login($user))
+
+{
+
+return $this-&gt;goHome();
+
+}
+
+}
+
+}
+
+return $this-&gt;render(&apos;signup&apos;, [
+
+&apos;model&apos; =&gt; $model,
+
+]); //显示注册页面
+
+}
+
+}
+
+在models/signupForm.php 的模型类文件
+
+namespace home\models;
+
+use yii\base\Model;
+
+class SignupForm extends Model
+
+{
+
+public $username;
+
+public $password;
+
+public $email;
+
+public function rules()
+
+{
+
+return [
+
+[[&apos;username&apos;,&apos;password&apos;,&apos;email&apos;],&apos;required&apos;],
+
+[&apos;email&apos;,&apos;email&apos;],
+
+[&apos;username&apos;,&apos;filter&apos;,&apos;filter&apos;=&gt;&apos;trim&apos;],//过滤输入的空格
+
+[&apos;username&apos;,&apos;string&apos;,&apos;min&apos;=&gt;2,&apos;max&apos;=&gt;8],//限制输入字符的长度
+
+[&apos;username&apos;,&apos;unique&apos;,&apos;targetClass&apos;=&gt;&apos;home\models\User&apos;,&apos;message&apos;=&gt;&apos;用户名已存在&apos;],//判断用户名是否已被注册
+
+[&apos;email&apos;,&apos;unique&apos;,&apos;targetClass&apos;=&gt;&apos;home\models\User&apos;,&apos;message&apos;=&gt;&apos;邮箱已被注册&apos;],//判断邮箱是否已被注册
+
+];
+
+}
+
+public function attributeLabels() //设置字段标签名
+
+{
+
+return [
+
+&apos;username&apos;=&gt;&apos;用户名&apos;,
+
+&apos;password&apos;=&gt;&apos;密码&apos;,
+
+&apos;email&apos;=&gt;&apos;邮箱&apos;,
+
+];
+
+}
+
+public function signup()
+
+{
+
+if(!$this-&gt;validate()) //validate方法即执行rules方法里的设置
+
+{
+
+return null;
+
+}
+
+$user=new User();
+
+$user-&gt;username=$this-&gt;username;
+
+$user-&gt;setPassword($this-&gt;password);//存储并加密密码的方法，在User模型类里
+
+$user-&gt;email=$this-&gt;email;
+
+$user-&gt;setAuthKey();
+
+//插入数据库
+
+return $user-&gt;save() ? $user : null;
+
+}
+
+}
+</code></pre><p>在view文件夹下新建注册页面的视图文件<br>注册页面的视图文件可用Gii来生成</p>
+<pre><code>use yii\helpers\Html;
+
+use yii\widgets\ActiveForm;
+
+?&gt;
+
+field($model, &apos;username&apos;)-&gt;textInput([&apos;autofocus&apos;=&gt;true,&apos;placeholder&apos;=&gt;&apos;请输入用户名&apos;]); ?&gt;
+
+field($model, &apos;password&apos;)-&gt;passwordInput([&apos;placeholder&apos;=&gt;&apos;请输入密码&apos;]);; ?&gt;
+
+field($model, &apos;email&apos;) ?&gt;
+
+&apos;btn btn-primary&apos;]) ?&gt;
+User模型类里书写以下代码
+
+namespace home\models;
+
+use yii\db\ActiveRecord;
+
+use yii\web\IdentityInterface;
+/**
+
+* @param $password
+
+* 存储并加密密码
+
+*/
+
+public  function setPassword($password)
+
+{
+
+$this-&gt;password_hash=\Yii::$app-&gt;security-&gt;generatePasswordHash($password);
+
+}
+/**
+
+*产生authkey
+
+*/
+
+public function setAuthKey()
+
+{
+
+$this-&gt;auth_key=\Yii::$app-&gt;security-&gt;generateRandomString();
+
+}
+</code></pre><p>包含的知识点</p>
+<p>模型载入用户所提交的数据</p>
+<pre><code>$model-&gt;load(\Yii:$app-&gt;request-&gt;post())
+</code></pre><p>延伸学习</p>
+<pre><code>//处理请求
+
+$request=Yii::$app-&gt;request;
+
+$get=$request-&gt;get();//获取get的值，等价于$get=$_GET;
+
+$id=$request-&gt;get(&apos;id&apos;);// 等价于$id = isset($_GET[&apos;id&apos;]) ? $_GET[&apos;id&apos;] : null;
+
+$id=$request-&gt;get(&apos;id&apos;,&apos;1&apos;);//等价于$id=isset($_GET[&apos;id&apos;]) ? $_GET[&apos;id&apos;] : 1;
+
+$post=Yii::$app-&gt;request-&gt;post();
+
+$post=Yii::$app-&gt;request-&gt;post(&apos;name&apos;,&apos;&apos;);// $id=isset($_POST[&apos;name&apos;]) ? $_POST[&apos;name&apos;] : &apos;&apos;;
+
+//判断请求方法
+
+if(Yii::$app-&gt;request-&gt;isPost){};
+
+if(Yii::$app-&gt;request-&gt;isAjax){};
+
+if(Yii::$app-&gt;request-&gt;isGet){};
+
+if(Yii::$app-&gt;request-&gt;isPut){};
+
+//更多参考见官方文档
+登录用户
+
+Yii::$app-&gt;getUser()-&gt;login($user)
+
+表单输入验证的规则设置
+
+public function rules()
+
+{
+
+return [
+
+[[&apos;username&apos;,&apos;password&apos;,&apos;email&apos;],&apos;required&apos;],
+
+[&apos;email&apos;,&apos;email&apos;],
+
+[&apos;username&apos;,&apos;filter&apos;,&apos;filter&apos;=&gt;&apos;trim&apos;],//过滤输入的空格
+
+[&apos;username&apos;,&apos;string&apos;,&apos;min&apos;=&gt;2,&apos;max&apos;=&gt;8],//限制输入字符的长度
+
+[&apos;username&apos;,&apos;unique&apos;,&apos;targetClass&apos;=&gt;&apos;home\models\User&apos;,&apos;message&apos;=&gt;&apos;用户名已存在&apos;],//判断用户名是否已被注册
+
+[&apos;email&apos;,&apos;unique&apos;,&apos;targetClass&apos;=&gt;&apos;home\models\User&apos;,&apos;message&apos;=&gt;&apos;邮箱已被注册&apos;],//判断邮箱是否已被注册
+
+];
+
+}
+
+//搭配以下代码使用
+
+if ($model-&gt;validate())
+
+{ // all inputs are valid
+
+}
+
+else
+
+{ // validation failed: $errors is an array containing error messages $errors = $model-&gt;errors;
+
+}
+</code></pre><p>//更多详情参考官方手册</p>
+<p>//<a href="http://www.yiichina.com/doc/guide/2.0/input-validation" target="_blank" rel="external">http://www.yiichina.com/doc/guide/2.0/input-validation</a><br>创建表单视图</p>
+<pre><code>use yii\helpers\Html;
+
+use yii\widgets\ActiveForm;
+
+?&gt;
+
+
+
+field($model, &apos;username&apos;)-&gt;textInput([&apos;autofocus&apos;=&gt;true,&apos;placeholder&apos;=&gt;&apos;请输入用户名&apos;]); ?&gt;
+
+field($model, &apos;password&apos;)-&gt;passwordInput([&apos;placeholder&apos;=&gt;&apos;请输入密码&apos;]);; ?&gt;
+
+field($model, &apos;email&apos;) ?&gt;
+
+&apos;btn btn-primary&apos;]) ?&gt;
+</code></pre><p>//更多详情参考官方手册</p>
+<p>//<a href="http://www.yiichina.com/doc/api/2.0/yii-widgets-activeform" target="_blank" rel="external">http://www.yiichina.com/doc/api/2.0/yii-widgets-activeform</a><br>将数据保存到数据库</p>
+<pre><code>$user-&gt;username=$this-&gt;username;
+
+$user-&gt;email=$this-&gt;email;
+
+$user-&gt;save();
+</code></pre>
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>Thanks for your cooperation<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/alipay.png">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/wepay.png">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -212,18 +516,74 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/08/laravel-stuff/">阅读全部 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://jobbylau.github.io/2017/03/08/laravel-stuff/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
 
-
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/03/06/One day in Macau/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">One day in Macau</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
 
 
 
@@ -231,153 +591,29 @@
 
 
   
-    <article id="post-One day in Macau" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/06/One day in Macau/">One day in Macau</a>
-    </h1>
+    <div class="duoshuo"></div>
   
 
-        
-        <a href="/2017/03/06/One day in Macau/" class="archive-article-date">
-  	<time datetime="2017-03-06T15:42:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>昨天有幸体验了一把资本主义社会的奢华和腐败。所幸在资本主义的奢华与腐败面前，仍然能高举社会主义的旗帜，背负着赢够“资本主义”的钱，光荣回到社会主义体制下消费。然而不尽人意，还是在强大的资本主义的势力下，向资本低头。<br>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">澳门</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/旅游/" class="article-tag-list-link color3">旅游</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/06/One day in Macau/">阅读全部 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-Have-a-nice-weekend" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/04/Have-a-nice-weekend/">Have a nice weekend</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/04/Have-a-nice-weekend/" class="archive-article-date">
-  	<time datetime="2017-03-04T14:38:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>又来到了熟悉的城市-珠海。还是老样子去拱北口岸和文华书店逛了一圈。今天太累了，就先写到这了。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">珠海</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/旅游/" class="article-tag-list-link color3">旅游</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/04/Have-a-nice-weekend/">阅读全部 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-  
+<section id="comments">
+   <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-laravel-stuff" data-title="Yii 2.0 框架初学之实现注册功能(转)" data-url="https://jobbylau.github.io/2017/03/08/laravel-stuff/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"jobby"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+</section>
 
 
           </div>
@@ -399,8 +635,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
